@@ -5,7 +5,7 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
 ## Tecnologias
 
 - PHP 8+ (sin frameworks), PDO para el acceso a datos
-- MySQL
+- MySQL (probado tambien con MariaDB, ya que es 100% compatible con el protocolo y driver `pdo_mysql` usados aqui; el proyecto se desarrollo y probo localmente sobre MariaDB via XAMPP)
 - HTML5, CSS3, JavaScript (validaciones del lado del cliente)
 
 ## Estructura del proyecto
@@ -37,7 +37,7 @@ Un cliente puede tener muchos pedidos (relacion 1:N). No se permite eliminar un 
 ## Requisitos
 
 - PHP >= 8.0 con extensiones `pdo` y `pdo_mysql`
-- MySQL >= 5.7 (o MariaDB equivalente)
+- MySQL >= 5.7 o MariaDB >= 10.4 (totalmente compatibles para este proyecto)
 
 ## Instalacion y ejecucion local
 
@@ -47,18 +47,18 @@ Un cliente puede tener muchos pedidos (relacion 1:N). No se permite eliminar un 
    cd clientes-pedidos-mvc
    ```
 
-2. Crear la base de datos ejecutando el script SQL:
+2. Crear la base de datos ejecutando el script SQL (funciona igual con `mysql` o con el cliente de MariaDB):
    ```
    mysql -u root -p < database/database.sql
    ```
    Esto crea la base `clientes_pedidos` con las tablas `clientes` y `pedidos`, junto con datos de ejemplo.
 
-3. Configurar la conexion (opcional). Por defecto `config/conexion.php` usa:
+3. Configurar la conexion. Por defecto `config/conexion.php` usa:
    - host: `localhost`
    - puerto: `3306`
    - base de datos: `clientes_pedidos`
    - usuario: `root`
-   - clave: `` (vacia)
+   - clave: `1234` (password por defecto de root en XAMPP; ajustar segun tu instalacion)
 
    Estos valores se pueden sobrescribir con variables de entorno: `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USER`, `DB_PASS`.
 
@@ -77,7 +77,7 @@ Esta aplicacion incluye un `Dockerfile` (PHP 8.2 + Apache) listo para desplegars
 
 1. Subir el repositorio a GitHub.
 2. En Render, crear un nuevo **Web Service**, seleccionar "Build from Dockerfile" y apuntar al repositorio.
-3. Render no ofrece MySQL administrado; se recomienda usar un proveedor externo de MySQL (por ejemplo Railway, Clever Cloud o Aiven) y crear la base de datos ahi ejecutando `database/database.sql`.
+3. Render no ofrece MySQL administrado; se recomienda usar un proveedor externo de MySQL o MariaDB (por ejemplo Railway, Clever Cloud o Aiven, todos compatibles) y crear la base de datos ahi ejecutando `database/database.sql`.
 4. En la seccion de variables de entorno del servicio en Render, configurar:
    - `DB_HOST`
    - `DB_PORT`
