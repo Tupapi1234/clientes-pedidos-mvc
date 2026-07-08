@@ -12,11 +12,11 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
 
 ```
 /public
-    index.php          -> Front Controller (enrutador)
-/css
-    estilo.css
-/js
-    validacion.js       -> Validaciones de formularios en el cliente
+    index.php          -> Front Controller (enrutador), unico punto expuesto por el servidor web
+    /css
+        estilo.css
+    /js
+        validacion.js   -> Validaciones de formularios en el cliente
 /app
     /controllers        -> ClienteController.php, PedidoController.php
     /models              -> Cliente.php, Pedido.php (acceso a datos con PDO)
@@ -26,6 +26,8 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
 /database
     database.sql          -> Script de creacion de la base de datos
 ```
+
+`css/` y `js/` viven dentro de `public/` a proposito: el servidor solo expone ese directorio (ver `Dockerfile`), manteniendo `app/`, `config/` y `database/` fuera del alcance de peticiones HTTP directas.
 
 ## Entidades y relacion
 

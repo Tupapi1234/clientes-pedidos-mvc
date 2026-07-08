@@ -1,3 +1,3 @@
-    <script src="../js/validacion.js"></script>
+    <script src="/js/validacion.js"></script>
 </body>
 </html>
