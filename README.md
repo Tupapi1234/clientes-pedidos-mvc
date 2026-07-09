@@ -4,8 +4,8 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
 
 ## Tecnologias
 
-- PHP 8+ (sin frameworks), PDO para el acceso a datos
-- MySQL (probado tambien con MariaDB, ya que es 100% compatible con el protocolo y driver `pdo_mysql` usados aqui; el proyecto se desarrollo y probo localmente sobre MariaDB via XAMPP)
+- PHP 8+ (sin frameworks), `mysqli` para el acceso a datos
+- MySQL (probado tambien con MariaDB, ya que es 100% compatible; el proyecto se desarrollo y probo localmente sobre MariaDB via XAMPP)
 - HTML5, CSS3, JavaScript (validaciones del lado del cliente)
 
 ## Estructura del proyecto
@@ -19,10 +19,10 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
         validacion.js   -> Validaciones de formularios en el cliente
 /app
     /controllers        -> ClienteController.php, PedidoController.php
-    /models              -> Cliente.php, Pedido.php (acceso a datos con PDO)
+    /models              -> Cliente.php, Pedido.php (acceso a datos con mysqli)
     /views                -> Vistas HTML por entidad (clientes/, pedidos/, partials/)
 /config
-    conexion.php         -> Conexion PDO a MySQL
+    conexion.php         -> Clase Conexion, conexion a MySQL con mysqli
 /database
     database.sql          -> Script de creacion de la base de datos
 ```
@@ -36,9 +36,22 @@ Aplicacion web para administrar **clientes** y sus **pedidos** (proceso comercia
 
 Un cliente puede tener muchos pedidos (relacion 1:N). No se permite eliminar un cliente que tenga pedidos asociados.
 
+## Enrutamiento
+
+Todas las peticiones pasan por `public/index.php`, que lee el parametro `url` y decide que metodo del controlador ejecutar. Ejemplos:
+
+- `index.php?url=cliente/listar` -> listado de clientes
+- `index.php?url=cliente/crearForm` -> formulario de nuevo cliente
+- `index.php?url=cliente/crear` -> guarda el POST del formulario
+- `index.php?url=cliente/editarForm&id=1` -> formulario de edicion
+- `index.php?url=cliente/actualizar` -> guarda los cambios
+- `index.php?url=cliente/eliminar&id=1` -> elimina el registro
+
+Lo mismo aplica para `pedido/...`.
+
 ## Requisitos
 
-- PHP >= 8.0 con extensiones `pdo` y `pdo_mysql`
+- PHP >= 8.0 con extension `mysqli`
 - MySQL >= 5.7 o MariaDB >= 10.4 (totalmente compatibles para este proyecto)
 
 ## Instalacion y ejecucion local
@@ -90,5 +103,5 @@ Esta aplicacion incluye un `Dockerfile` (PHP 8.2 + Apache) listo para desplegars
 
 ## Validaciones
 
-- **Frontend**: atributos HTML5 (`required`, `pattern`, `min`, `maxlength`, etc.) y validaciones en `js/validacion.js` que impiden el envio del formulario si hay datos invalidos.
-- **Backend**: cada controlador valida nuevamente todos los campos (formato de correo, telefono, longitudes, numeros positivos, fechas validas, existencia del cliente seleccionado, correo duplicado) antes de tocar la base de datos. Ningun campo vacio o invalido llega a guardarse.
+- **Frontend**: atributos HTML5 (`required`, `min`, etc.) y funciones en `js/validacion.js` (`validarFormularioCliente`, `validarFormularioPedido`) que revisan los campos con `alert()` e impiden el envio del formulario si hay datos invalidos.
+- **Backend**: cada controlador vuelve a revisar los campos (que no esten vacios, correo valido, cantidad y precio mayores a 0, correo no duplicado) antes de tocar la base de datos. Ningun campo vacio o invalido llega a guardarse.

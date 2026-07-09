@@ -1,55 +1,71 @@
 <?php
+require_once __DIR__ . "/../../config/conexion.php";
+
 class Pedido
 {
-    private $pdo;
-
-    public function __construct($pdo)
+    public static function obtenerTodos()
     {
-        $this->pdo = $pdo;
+        $conn = Conexion::conectar();
+        $sql = "SELECT p.*, c.nombre AS cliente_nombre
+                FROM pedidos p
+                INNER JOIN clientes c ON p.cliente_id = c.id
+                ORDER BY p.id DESC";
+        $res = $conn->query($sql);
+
+        $pedidos = [];
+        while ($fila = $res->fetch_assoc()) {
+            $pedidos[] = $fila;
+        }
+        return $pedidos;
     }
 
-    public function obtenerTodos()
+    public static function obtenerPorId($id)
     {
-        $stmt = $this->pdo->query(
-            "SELECT p.*, c.nombre AS cliente_nombre
-             FROM pedidos p
-             INNER JOIN clientes c ON p.cliente_id = c.id
-             ORDER BY p.id DESC"
-        );
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $conn = Conexion::conectar();
+        $id = (int)$id;
+
+        $sql = "SELECT * FROM pedidos WHERE id = ? LIMIT 1";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+
+        return $stmt->get_result()->fetch_assoc(); // retorna null si no existe
     }
 
-    public function obtenerPorId($id)
+    public static function crear($clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM pedidos WHERE id = ?");
-        $stmt->execute([$id]);
-        $pedido = $stmt->fetch(PDO::FETCH_ASSOC);
-        return $pedido ?: null;
+        $conn = Conexion::conectar();
+        $clienteId = (int)$clienteId;
+
+        $sql = "INSERT INTO pedidos (cliente_id, producto, cantidad, precio_unitario, estado, fecha_pedido)
+                VALUES (?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("isidss", $clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido);
+        return $stmt->execute();
     }
 
-    public function guardar($clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido)
+    public static function actualizar($id, $clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido)
     {
-        $stmt = $this->pdo->prepare(
-            "INSERT INTO pedidos (cliente_id, producto, cantidad, precio_unitario, estado, fecha_pedido)
-             VALUES (?, ?, ?, ?, ?, ?)"
-        );
-        $stmt->execute([$clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido]);
-        return $this->pdo->lastInsertId();
+        $conn = Conexion::conectar();
+        $id = (int)$id;
+        $clienteId = (int)$clienteId;
+
+        $sql = "UPDATE pedidos
+                SET cliente_id=?, producto=?, cantidad=?, precio_unitario=?, estado=?, fecha_pedido=?
+                WHERE id=?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("isidssi", $clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido, $id);
+        return $stmt->execute();
     }
 
-    public function actualizar($id, $clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido)
+    public static function eliminar($id)
     {
-        $stmt = $this->pdo->prepare(
-            "UPDATE pedidos
-             SET cliente_id = ?, producto = ?, cantidad = ?, precio_unitario = ?, estado = ?, fecha_pedido = ?
-             WHERE id = ?"
-        );
-        return $stmt->execute([$clienteId, $producto, $cantidad, $precioUnitario, $estado, $fechaPedido, $id]);
-    }
+        $conn = Conexion::conectar();
+        $id = (int)$id;
 
-    public function eliminar($id)
-    {
-        $stmt = $this->pdo->prepare("DELETE FROM pedidos WHERE id = ?");
-        return $stmt->execute([$id]);
+        $sql = "DELETE FROM pedidos WHERE id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("i", $id);
+        return $stmt->execute();
     }
 }

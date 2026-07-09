@@ -3,70 +3,57 @@
 
 <h2>Editar pedido</h2>
 
-<form class="formulario" id="form-pedido" method="POST" action="index.php?controlador=pedido&accion=actualizar" novalidate>
-    <input type="hidden" name="id" value="<?= (int) $datos['id'] ?>">
+<?php require __DIR__ . '/../partials/mensajes.php'; ?>
+
+<form class="formulario" id="form-pedido" method="POST" action="index.php?url=pedido/actualizar"
+      onsubmit="return validarFormularioPedido()">
+    <input type="hidden" name="id" value="<?= (int) $pedido['id'] ?>">
 
     <div class="campo">
         <label for="cliente_id">Cliente</label>
-        <select id="cliente_id" name="cliente_id" required
-                class="<?= isset($errores['cliente_id']) ? 'campo-invalido' : '' ?>">
+        <select id="cliente_id" name="cliente_id" required>
             <option value="">-- Seleccione un cliente --</option>
             <?php foreach ($clientes as $c): ?>
-                <option value="<?= (int) $c['id'] ?>" <?= (string) $datos['cliente_id'] === (string) $c['id'] ? 'selected' : '' ?>>
+                <option value="<?= (int) $c['id'] ?>" <?= (string) $pedido['cliente_id'] === (string) $c['id'] ? 'selected' : '' ?>>
                     <?= htmlspecialchars($c['nombre']) ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <span class="error-campo" id="error-cliente_id"><?= htmlspecialchars($errores['cliente_id'] ?? '') ?></span>
     </div>
 
     <div class="campo">
         <label for="producto">Producto</label>
-        <input type="text" id="producto" name="producto" value="<?= htmlspecialchars($datos['producto']) ?>"
-               required maxlength="150"
-               class="<?= isset($errores['producto']) ? 'campo-invalido' : '' ?>">
-        <span class="error-campo" id="error-producto"><?= htmlspecialchars($errores['producto'] ?? '') ?></span>
+        <input type="text" id="producto" name="producto" value="<?= htmlspecialchars($pedido['producto']) ?>" required>
     </div>
 
     <div class="campo">
         <label for="cantidad">Cantidad</label>
-        <input type="number" id="cantidad" name="cantidad" value="<?= htmlspecialchars($datos['cantidad']) ?>"
-               required min="1" step="1"
-               class="<?= isset($errores['cantidad']) ? 'campo-invalido' : '' ?>">
-        <span class="error-campo" id="error-cantidad"><?= htmlspecialchars($errores['cantidad'] ?? '') ?></span>
+        <input type="number" id="cantidad" name="cantidad" value="<?= htmlspecialchars($pedido['cantidad']) ?>" min="1" step="1" required>
     </div>
 
     <div class="campo">
         <label for="precio_unitario">Precio unitario</label>
-        <input type="number" id="precio_unitario" name="precio_unitario" value="<?= htmlspecialchars($datos['precio_unitario']) ?>"
-               required min="0.01" step="0.01"
-               class="<?= isset($errores['precio_unitario']) ? 'campo-invalido' : '' ?>">
-        <span class="error-campo" id="error-precio_unitario"><?= htmlspecialchars($errores['precio_unitario'] ?? '') ?></span>
+        <input type="number" id="precio_unitario" name="precio_unitario" value="<?= htmlspecialchars($pedido['precio_unitario']) ?>" min="0.01" step="0.01" required>
     </div>
 
     <div class="campo">
         <label for="estado">Estado</label>
-        <select id="estado" name="estado" required
-                class="<?= isset($errores['estado']) ? 'campo-invalido' : '' ?>">
+        <select id="estado" name="estado" required>
             <?php foreach (['pendiente', 'completado', 'cancelado'] as $estado): ?>
-                <option value="<?= $estado ?>" <?= $datos['estado'] === $estado ? 'selected' : '' ?>>
+                <option value="<?= $estado ?>" <?= $pedido['estado'] === $estado ? 'selected' : '' ?>>
                     <?= ucfirst($estado) ?>
                 </option>
             <?php endforeach; ?>
         </select>
-        <span class="error-campo" id="error-estado"><?= htmlspecialchars($errores['estado'] ?? '') ?></span>
     </div>
 
     <div class="campo">
         <label for="fecha_pedido">Fecha del pedido</label>
-        <input type="date" id="fecha_pedido" name="fecha_pedido" value="<?= htmlspecialchars($datos['fecha_pedido']) ?>"
-               required
-               class="<?= isset($errores['fecha_pedido']) ? 'campo-invalido' : '' ?>">
-        <span class="error-campo" id="error-fecha_pedido"><?= htmlspecialchars($errores['fecha_pedido'] ?? '') ?></span>
+        <input type="date" id="fecha_pedido" name="fecha_pedido" value="<?= htmlspecialchars($pedido['fecha_pedido']) ?>" required>
     </div>
 
     <button type="submit" class="boton boton-primario">Actualizar</button>
-    <a class="boton boton-secundario" href="index.php?controlador=pedido&accion=listar">Cancelar</a>
+    <a class="boton boton-secundario" href="index.php?url=pedido/listar">Cancelar</a>
 </form>
 
 <?php require __DIR__ . '/../partials/pie.php'; ?>

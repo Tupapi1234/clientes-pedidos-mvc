@@ -4,7 +4,7 @@
 <?php require __DIR__ . '/../partials/mensajes.php'; ?>
 
 <div class="acciones">
-    <a class="boton boton-primario" href="index.php?controlador=cliente&accion=crear">+ Nuevo cliente</a>
+    <a class="boton boton-primario" href="index.php?url=cliente/crearForm">+ Nuevo cliente</a>
 </div>
 
 <table>
@@ -28,9 +28,9 @@
                     <td><?= htmlspecialchars($c['telefono']) ?></td>
                     <td><?= htmlspecialchars($c['direccion']) ?></td>
                     <td class="columna-acciones">
-                        <a href="index.php?controlador=cliente&accion=editar&id=<?= (int) $c['id'] ?>">Editar</a>
-                        <a href="index.php?controlador=cliente&accion=eliminar&id=<?= (int) $c['id'] ?>"
-                           onclick="return confirm('¿Eliminar este cliente?');">Eliminar</a>
+                        <a href="index.php?url=cliente/editarForm&id=<?= (int) $c['id'] ?>">Editar</a>
+                        <a href="index.php?url=cliente/eliminar&id=<?= (int) $c['id'] ?>"
+                           onclick="return confirm('Eliminar este cliente?');">Eliminar</a>
                     </td>
                 </tr>
             <?php endforeach; ?>

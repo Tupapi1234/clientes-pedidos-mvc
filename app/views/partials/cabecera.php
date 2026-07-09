@@ -11,6 +11,6 @@
     <p class="subtitulo">Modulo CRUD desarrollado en PHP con arquitectura MVC</p>
 
     <nav class="menu-principal">
-        <a href="index.php?controlador=cliente&accion=listar">Clientes</a>
-        <a href="index.php?controlador=pedido&accion=listar">Pedidos</a>
+        <a href="index.php?url=cliente/listar">Clientes</a>
+        <a href="index.php?url=pedido/listar">Pedidos</a>
     </nav>
